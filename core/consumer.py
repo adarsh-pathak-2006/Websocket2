@@ -1,17 +1,22 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
-from core.models import MainDb
 
 
 class MainConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
+        self.room_name="room1"
+        await self.channel_layer.group_add(self.room_name, self.channel_layer)
         await self.accept()
 
     async def receive(self, text_data):
-        print(text_data)
-        await MainDb.objects.acreate(message=text_data)
-        await self.send(text_data="data saved in the database")
+        data=json.loads(text_data)
+        message=data.get("message")
+        await self.channel_layer.group_send(self.room_name, { 'type':'chat_message', 'message':message })
+
+    async def chat_message(self, event):
+        await self.send(text_data=json.loads({'message':event["message"]}))
+    
        
     async def disconnect(self, close_code):
-        print(f"connection disconnected- {close_code}")
+        await self.channel_layer.group_discard(self.room_name, self.channel_name)
