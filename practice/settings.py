@@ -68,6 +68,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'practice.wsgi.application'
+ASGI_APPLICATION = 'practice.asgi_application'
 
 
 # Database
