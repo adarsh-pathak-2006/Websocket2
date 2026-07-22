@@ -17,4 +17,4 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         )
 
     async def disconnect(self, close_code):
-        pass
+        print(f"connection disconnected- {close_code}")
